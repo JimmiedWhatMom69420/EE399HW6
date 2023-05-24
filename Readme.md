@@ -8,6 +8,10 @@
 
 ##### This assignment focuses on training neural networks to predict what may happen in the future utilizing Lorenz equations for the Lorenz system.
 
+This repository contains the code for the paper "Sensing with shallow recurrent decoder networks" by Jan P. Williams, Olivia Zahn, and J. Nathan Kutz. SHallow REcurrent Decoders (SHRED) are models that learn a mapping from trajectories of sensor measurements to a high-dimensional, spatio-temporal state. For an example use of SHRED, see the iPython notebook example.ipynb.
+
+The datasets considered in the paper "Sensing with shallow recurrent decoder networks" consist of sea-surface temperature (SST), a forced turbulent flow, and atmospheric ozone concentration. Cloning this repo will download the SST data used. Details for accessing the other datasets can be found in the supplement to the paper. 
+
 # Summary
 
 This assignment focuses on utilizing machine learning to analyze various factors affecting time series forecasting. Specifically, the project employs an LSTM/decoder model to predict sea-surface temperature. The objectives of this assignment include the following:
