@@ -8,10 +8,6 @@
 
 ##### This assignment focuses on training neural networks to predict what may happen in the future utilizing Lorenz equations for the Lorenz system.
 
-This repository contains the code for the paper "Sensing with shallow recurrent decoder networks" by Jan P. Williams, Olivia Zahn, and J. Nathan Kutz. SHallow REcurrent Decoders (SHRED) are models that learn a mapping from trajectories of sensor measurements to a high-dimensional, spatio-temporal state. For an example use of SHRED, see the iPython notebook example.ipynb.
-
-The datasets considered in the paper "Sensing with shallow recurrent decoder networks" consist of sea-surface temperature (SST), a forced turbulent flow, and atmospheric ozone concentration. Cloning this repo will download the SST data used. Details for accessing the other datasets can be found in the supplement to the paper. 
-
 # Summary
 
 This assignment focuses on utilizing machine learning to analyze various factors affecting time series forecasting. Specifically, the project employs an LSTM/decoder model to predict sea-surface temperature. The objectives of this assignment include the following:
@@ -145,151 +141,10 @@ valid_dataset = TimeSeriesDataset(valid_data_in, valid_data_out)
 test_dataset = TimeSeriesDataset(test_data_in, test_data_out)
 ```
 
-To train a neural network (NN) to advance the solution from time t to t + ∆t for different values of ρ and evaluate its performance for future state prediction, you need to make the following modifications to the given code:
-
-1.  Update the value of ρ to the desired values (e.g., 10, 28, and 40) by modifying the `rho` variable in the code.
-    
-2.  Modify the code to split the dataset into training and testing sets. Currently, the entire dataset is used for training. You can use the `train_test_split` function from scikit-learn to split the dataset into training and testing sets.
-    
-3.  Update the model architecture and training parameters accordingly.
-
-Now we train the script on a neural network to advance the solution from ``t to t + Δt``  for ρ = 10, 28, 40
-
-![image](https://media.discordapp.net/attachments/823976012203163649/1108644652447449088/FNq9eABJNdAAAAAElFTkSuQmCC.png?width=1438&height=443)
-Next, lets see the computational output for ρ = 17 and 35 
-
-![5eGgV0GDP00AAAAASUVORK5CYII.png (916×426) (discordapp.net)](https://media.discordapp.net/attachments/823976012203163649/1108644651377905684/5eGgV0GDP00AAAAASUVORK5CYII.png?width=1296&height=603)
-
-
-### Question 2
-
-To compare feed-forward, LSTM, RNN and Echo State Netowrks for forecasting the dynamics of the Lorenz system, we must briefly follow these:
-
-1.  The Lorenz equations and system parameters are defined.
-    
-2.  Initial conditions are generated for the Lorenz system.
-    
-3.  Input and output arrays are prepared for the neural networks by integrating the Lorenz equations.
-    
-4.  The data is split into training and testing sets.
-    
-5.  Feed-Forward Neural Network (FNN):
-    
-    -   A feed-forward neural network model is created using the Keras Sequential API.
-    -   The model is trained on the training data using the mean squared error loss.
-    -   The model makes predictions on the testing data.
-6.  LSTM:
-    
-    -   An LSTM model is created using the Keras Sequential API.
-    -   The model is trained on the training data using the mean squared error loss.
-    -   The model makes predictions on the testing data.
-7.  RNN:
-    
-    -   An RNN model is created using the Keras Sequential API.
-    -   The model is trained on the training data using the mean squared error loss.
-    -   The model makes predictions on the testing data.
-8.  Echo State Network (ESN):
-    
-    -   An Echo State Network model is created using the `reservoirpy` library.
-    -   The model is trained on the training data.
-    -   The model makes predictions on the testing data.
-9.  The predictions from each model are compared using mean squared error (MSE) as the evaluation metric.
-    
-
-The code allows for a comparison of the performance of different neural network models in forecasting the dynamics of the Lorenz system.
-
-Below is the computational output for it. Running all models giving the mean square errors for rho of 10 and 35
-
----------------------
-| Mean Squared Error | Rho |
-| -- | -- |
-| 0.15224202827965347 | 10 |
-| 2331.242977221156 | |
-| 10145.713553004734 ||
-|1.7928471466364329 | 35 |
-| 2290.874895267006 ||
-|9785.374156340838 ||
-
-Below is the code for the models in python:
-
-```python
-# Feed-Forward Neural Network (FNN) 
-model_ff = Sequential() 
-model_ff.add(Dense(32, activation='relu', input_shape=(3,))) model_ff.add(Dense(32, activation='relu')) model_ff.add(Dense(3)) model_ff.compile(optimizer='adam', loss='mse') model_ff.fit(X_train, Y_train, epochs=50, batch_size=32, verbose=0) Y_pred_ff = model_ff.predict(X_test) 
-
-# LSTM 
-model_lstm = Sequential() model_lstm.add(LSTM(32, activation='relu', input_shape=(1, 3))) 
-model_lstm.add(Dense(3)) 
-model_lstm.compile(optimizer='adam', loss='mse') model_lstm.fit(X_train[:, np.newaxis, :], Y_train, epochs=50, batch_size=32, verbose=0) Y_pred_lstm = model_lstm.predict(X_test[:, np.newaxis, :]) 
-# RNN 
-model_rnn = Sequential() 
-model_rnn.add(SimpleRNN(32, activation='relu', input_shape=(1, 3))) model_rnn.add(Dense(3)) model_rnn.compile(optimizer='adam', loss='mse') 
-model_rnn.fit(X_train[:, np.newaxis, :], Y_train, epochs=50, batch_size=32, verbose=0) Y_pred_rnn = model_rnn.predict(X_test[:, np.newaxis, :]) 
-# Echo State Network (ESN) 
-model_esn = ESN(n_inputs=3, n_outputs=3, n_reservoir=1000) model_esn.fit(X_train, Y_train) Y_pred_esn = model_esn.predict(X_test)
-```
-
-Below is the computational output for this code: 
-
-```python
-Running Model-1:   0%|          | 0/1 [00:00<?, ?it/s]
-
-Running Model-1:   0%|          | 0/1 [00:00<?, ?it/s]
-
-Running Model-1: 732it [00:00, 7301.54it/s]          
-
-…
-
-Running Model-1: 90000it [00:12, 7178.04it/s]
-
-Fitting node Ridge-0...
-
-Running Model-1: 100%|██████████| 1/1 [00:12<00:00, 12.58s/it]
-
-Running Model-1: 10000it [00:01, 8259.51it/s]
-
-Mean squared error: 0.15224202827965347 for rho = 10
-
-Running Model-1: 100000it [00:11, 8343.80it/s]
-
-Mean squared error: 2331.242977221156
-
-Running Model-1: 100000it [00:12, 7821.03it/s]
-
-Mean squared error: 10145.713553004734  
-_____
-
-Running Model-1:   0%|          | 0/1 [00:00<?, ?it/s]
-
-Running Model-1:   0%|          | 0/1 [00:00<?, ?it/s]
-
-Running Model-1: 713it [00:00, 7107.06it/s]          
-
-…
-
-Running Model-1: 90000it [00:12, 7310.28it/s]
-
-Fitting node Ridge-0...
-
-Running Model-1: 100%|██████████| 1/1 [00:12<00:00, 12.35s/it]
-
-Running Model-1: 10000it [00:01, 8144.66it/s]
-
-Mean squared error: 1.7928471466364329 for rho = 35
-
-Running Model-1: 100000it [00:12, 8259.11it/s]
-
-Mean squared error: 2290.874895267006
-
-Running Model-1: 100000it [00:12, 7923.76it/s]
-
-Mean squared error: 9785.374156340838
-
-```
 
 Below is the computational output of this model, plotting the results:
 
-![world forecast][https://github.com/JimmiedWhatMom69420/EE399HW6/blob/main/world.png]
+![world forecast](https://github.com/JimmiedWhatMom69420/EE399HW6/blob/main/world.png)
 
 ### Question 3: time lag variable
 
